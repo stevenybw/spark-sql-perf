@@ -7,6 +7,12 @@ object GenerateDataset {
     val ait = args.iterator
     val scaleFactor = ait.next()
     println(s"SF = ${scaleFactor.toInt}")
+    val codec = if (ait.hasNext) {
+      ait.next()
+    } else {
+      "snappy"
+    }
+    println(s"Compression Codec = ${codec}")
 
     val spark = SparkSession.builder()
       .config("hive.metastore.warehouse.dir", "hdfs://bic07/user/ybw/tpcds_warehouse")
@@ -23,11 +29,12 @@ object GenerateDataset {
     val filterNull = false
     val shuffle = true
 
-    val rootDir = s"hdfs://bic07/user/ybw/ssd/tpcds_gen/sf$scaleFactor-$format/useDecimal=$useDecimal,useDate=$useDate,filterNull=$filterNull"
+    val rootDir = s"hdfs://bic07/user/ybw/ssd/tpcds_gen/sf$scaleFactor-$format/useDecimal=$useDecimal,useDate=$useDate,filterNull=$filterNull,compression=$codec"
     val databaseName = s"tpcds_sf${scaleFactor}" +
       s"""_${if (useDecimal) "with" else "no"}decimal""" +
       s"""_${if (useDate) "with" else "no"}date""" +
-      s"""_${if (filterNull) "no" else "with"}nulls_ssd"""
+      s"""_${if (filterNull) "no" else "with"}nulls_ssd""" +
+      s"""_${codec}"""
 
     import com.databricks.spark.sql.perf.tpcds.TPCDSTables
     val tables = new TPCDSTables(sqlContext, dsdgenDir = "/home/ybw/OpenSourceCode/tpcds-kit/tools", scaleFactor = scaleFactor, useDoubleForDecimal = !useDecimal, useStringForDate = !useDate)
@@ -36,15 +43,21 @@ object GenerateDataset {
     // Limit the memory used by parquet writer
     SparkHadoopUtil.get.conf.set("parquet.memory.pool.ratio", "0.1")
     // Compress with snappy:
-    sqlContext.setConf("spark.sql.parquet.compression.codec", "snappy")
+    sqlContext.setConf("spark.sql.parquet.compression.codec", codec)
     // TPCDS has around 2000 dates.
     spark.conf.set("spark.sql.shuffle.partitions", "2000")
     // Don't write too huge files.
     sqlContext.setConf("spark.sql.files.maxRecordsPerFile", "20000000")
 
-    val dsdgen_partitioned = 1000 // recommended for SF10000+.
+    val dsdgen_partitioned = if (scaleFactor.toInt <= 1000) {
+      1000
+    } else {
+      10000
+    } // recommended for SF10000+.
+    println(s"Number of partitions = ${dsdgen_partitioned}")
     val dsdgen_nonpartitioned = 10 // small tables do not need much parallelism in generation.
 
+    // Note: customer 3.3GB  customer_address 0.6GB
     val nonPartitionedTables = Array("call_center", "catalog_page", "customer", "customer_address", "customer_demographics", "date_dim", "household_demographics", "income_band", "item", "promotion", "reason", "ship_mode", "store", "time_dim", "warehouse", "web_page", "web_site")
     nonPartitionedTables.foreach { t => {
       tables.genData(
