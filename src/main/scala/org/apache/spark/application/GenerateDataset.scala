@@ -6,16 +6,34 @@ object GenerateDataset {
   def main(args: Array[String]): Unit = {
     val ait = args.iterator
     val scaleFactor = ait.next()
-    println(s"SF = ${scaleFactor.toInt}")
     val codec = if (ait.hasNext) {
       ait.next()
     } else {
       "snappy"
     }
-    println(s"Compression Codec = ${codec}")
+    val rawPrefixPath = if (ait.hasNext) {
+      ait.next()
+    } else {
+      "hdfs://bic07/user/ybw/ssd/tpcds_gen"
+    }
+    val warehousePrefixPath = if (ait.hasNext) {
+      ait.next()
+    } else {
+      "hdfs://bic07/user/ybw/tpcds_warehouse"
+    }
+    val storageDevice = if (ait.hasNext) {
+      ait.next()
+    } else {
+      "hdd"
+    }
+    println(s"SF = ${scaleFactor.toInt}")
+    println(s"Compression_Codec = ${codec}")
+    println(s"Raw_Prefix_Path = ${rawPrefixPath}")
+    println(s"Warehouse_Prefix_Path = ${warehousePrefixPath}")
+    println(s"Storage_Device = ${storageDevice}")
 
     val spark = SparkSession.builder()
-      .config("hive.metastore.warehouse.dir", "hdfs://bic07/user/ybw/tpcds_warehouse")
+      .config("hive.metastore.warehouse.dir", warehousePrefixPath)
       .config("hive.metastore.uris", "thrift://bic08:9083")
       .config("spark.memory.offHeap.enabled", "true")
       .config("spark.memory.offHeap.size", "2g")
@@ -29,11 +47,11 @@ object GenerateDataset {
     val filterNull = false
     val shuffle = true
 
-    val rootDir = s"hdfs://bic07/user/ybw/ssd/tpcds_gen/sf$scaleFactor-$format/useDecimal=$useDecimal,useDate=$useDate,filterNull=$filterNull,compression=$codec"
+    val rootDir = s"${rawPrefixPath}/sf$scaleFactor-$format/useDecimal=$useDecimal,useDate=$useDate,filterNull=$filterNull,compression=$codec"
     val databaseName = s"tpcds_sf${scaleFactor}" +
       s"""_${if (useDecimal) "with" else "no"}decimal""" +
       s"""_${if (useDate) "with" else "no"}date""" +
-      s"""_${if (filterNull) "no" else "with"}nulls_ssd""" +
+      s"""_${if (filterNull) "no" else "with"}nulls_${storageDevice}""" +
       s"""_${codec}"""
 
     import com.databricks.spark.sql.perf.tpcds.TPCDSTables
