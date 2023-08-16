@@ -17,6 +17,7 @@ object LoadData {
     val spark = SparkSession
       .builder()
       .appName(getClass.getName)
+      .enableHiveSupport()
       .getOrCreate()
 
     spark.sql(s"drop database if exists $DB cascade")
