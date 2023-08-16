@@ -1,6 +1,7 @@
-package com.databricks.spark.sql.perf.tpcds
+package org.pacman.tpcds
 
-import org.apache.hadoop.fs.{FileSystem, Path}
+import com.databricks.spark.sql.perf.tpcds.TPCDSTables
+import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.util.SerializableConfiguration
 

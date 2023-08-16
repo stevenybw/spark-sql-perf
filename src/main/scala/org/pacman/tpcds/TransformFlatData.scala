@@ -1,10 +1,9 @@
-package com.databricks.spark.sql.perf.tpcds
+package org.pacman.tpcds
 
+import com.databricks.spark.sql.perf.tpcds.TPCDSTables
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.util.SerializableConfiguration
-
-import java.io.PrintWriter
 
 object TransformFlatData {
   def main(args: Array[String]): Unit = {
