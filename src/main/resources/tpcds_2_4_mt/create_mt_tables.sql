@@ -14,13 +14,13 @@ create table s_catalog_page_${ROUND}
     cpag_start_date             char(10)                      ,
     cpag_end_date               char(10)                      ,
     cpag_description            varchar(100)                  ,
-    cpag_type                   varchar(100)                  
+    cpag_type                   varchar(100)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_catalog_page';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_catalog_page_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_zip_to_gmt                                       
+--   Table: s_zip_to_gmt
 -- ============================================================
 drop table if exists s_zip_to_gmt_${ROUND};
 create table s_zip_to_gmt_${ROUND}
@@ -28,12 +28,12 @@ create table s_zip_to_gmt_${ROUND}
     zipg_zip                    char(5)               not null,
     zipg_gmt_offset             integer               not null
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_zip_to_gmt';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_zip_to_gmt_${ROUND}.dat';
 
 
 -- ============================================================
---   Table: s_purchase_lineitem                                
+--   Table: s_purchase_lineitem
 -- ============================================================
 drop table if exists s_purchase_lineitem_${ROUND};
 create table s_purchase_lineitem_${ROUND}
@@ -45,13 +45,13 @@ create table s_purchase_lineitem_${ROUND}
     plin_quantity               bigint                        ,
     plin_sale_price             decimal(7,2)                  ,
     plin_coupon_amt             decimal(7,2)                  ,
-    plin_comment                varchar(100)                  
+    plin_comment                varchar(100)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_purchase_lineitem';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_purchase_lineitem_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_customer                                         
+--   Table: s_customer
 -- ============================================================
 drop table if exists s_customer_${ROUND};
 create table s_customer_${ROUND}
@@ -92,13 +92,13 @@ create table s_customer_${ROUND}
     cust_depend_emp_cnt         smallint                      ,
     cust_depend_college_cnt     smallint                      ,
     cust_vehicle_cnt            smallint                      ,
-    cust_annual_income          decimal(9,2)                  
+    cust_annual_income          decimal(9,2)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_customer';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_customer_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_customer_address                                 
+--   Table: s_customer_address
 -- ============================================================
 drop table if exists s_customer_address_${ROUND};
 create table s_customer_address_${ROUND}
@@ -113,13 +113,13 @@ create table s_customer_address_${ROUND}
     cadr_county                 char(30)                      ,
     cadr_state                  char(2)                       ,
     cadr_zip                    char(10)                      ,
-    cadr_country                char(20)                      
+    cadr_country                char(20)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_customer_address';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_customer_address_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_purchase                                         
+--   Table: s_purchase
 -- ============================================================
 drop table if exists s_purchase_${ROUND};
 create table s_purchase_${ROUND}
@@ -131,13 +131,13 @@ create table s_purchase_${ROUND}
     purc_purchase_time          integer                       ,
     purc_register_id            integer                       ,
     purc_clerk_id               integer                       ,
-    purc_comment                char(100)                     
+    purc_comment                char(100)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_purchase';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_purchase_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_catalog_order                                    
+--   Table: s_catalog_order
 -- ============================================================
 drop table if exists s_catalog_order_${ROUND};
 create table s_catalog_order_${ROUND}
@@ -149,13 +149,13 @@ create table s_catalog_order_${ROUND}
     cord_order_time             integer                       ,
     cord_ship_mode_id           char(16)                      ,
     cord_call_center_id         char(16)                      ,
-    cord_order_comments         varchar(100)                  
+    cord_order_comments         varchar(100)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_catalog_order';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_catalog_order_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_web_order                                        
+--   Table: s_web_order
 -- ============================================================
 drop table if exists s_web_order_${ROUND};
 create table s_web_order_${ROUND}
@@ -167,13 +167,13 @@ create table s_web_order_${ROUND}
     word_order_time             integer                       ,
     word_ship_mode_id           char(16)                      ,
     word_web_site_id            char(16)                      ,
-    word_order_comments         char(100)                     
+    word_order_comments         char(100)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_web_order';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_web_order_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_item                                             
+--   Table: s_item
 -- ============================================================
 drop table if exists s_item_${ROUND};
 create table s_item_${ROUND}
@@ -187,13 +187,13 @@ create table s_item_${ROUND}
     item_color                  char(20)                      ,
     item_units                  char(10)                      ,
     item_container              char(10)                      ,
-    item_manager_id             integer                       
+    item_manager_id             integer
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_item';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_item_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_catalog_order_lineitem                           
+--   Table: s_catalog_order_lineitem
 -- ============================================================
 drop table if exists s_catalog_order_lineitem_${ROUND};
 create table s_catalog_order_lineitem_${ROUND}
@@ -209,13 +209,13 @@ create table s_catalog_order_lineitem_${ROUND}
     clin_ship_date              char(10)                      ,
     clin_catalog_number         integer                       ,
     clin_catalog_page_number    integer                       ,
-    clin_ship_cost              decimal(7,2)                  
+    clin_ship_cost              decimal(7,2)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_catalog_order_lineitem';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_catalog_order_lineitem_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_web_order_lineitem                               
+--   Table: s_web_order_lineitem
 -- ============================================================
 drop table if exists s_web_order_lineitem_${ROUND};
 create table s_web_order_lineitem_${ROUND}
@@ -230,13 +230,13 @@ create table s_web_order_lineitem_${ROUND}
     wlin_warehouse_id           char(16)                      ,
     wlin_ship_date              char(10)                      ,
     wlin_ship_cost              decimal(7,2)                  ,
-    wlin_web_page_id            char(16)                      
+    wlin_web_page_id            char(16)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_web_order_lineitem';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_web_order_lineitem_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_store                                            
+--   Table: s_store
 -- ============================================================
 drop table if exists s_store_${ROUND};
 create table s_store_${ROUND}
@@ -251,13 +251,13 @@ create table s_store_${ROUND}
     stor_market_id              integer                       ,
     stor_geography_class        char(100)                     ,
     stor_market_manager         char(40)                      ,
-    stor_tax_percentage         decimal(5,2)                  
+    stor_tax_percentage         decimal(5,2)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_store';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_store_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_call_center                                      
+--   Table: s_call_center
 -- ============================================================
 drop table if exists s_call_center_${ROUND};
 create table s_call_center_${ROUND}
@@ -271,13 +271,13 @@ create table s_call_center_${ROUND}
     call_center_sq_ft           integer                       ,
     call_center_hours           char(20)                      ,
     call_center_manager         char(40)                      ,
-    call_center_tax_percentage  decimal(7,2)                  
+    call_center_tax_percentage  decimal(7,2)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_call_center';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_call_center_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_web_site                                         
+--   Table: s_web_site
 -- ============================================================
 drop table if exists s_web_site_${ROUND};
 create table s_web_site_${ROUND}
@@ -288,26 +288,26 @@ create table s_web_site_${ROUND}
     wsit_site_name              char(50)                      ,
     wsit_site_class             char(50)                      ,
     wsit_site_manager           char(40)                      ,
-    wsit_tax_percentage         decimal(5,2)                  
+    wsit_tax_percentage         decimal(5,2)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_web_site';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_web_site_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_warehouse                                        
+--   Table: s_warehouse
 -- ============================================================
 drop table if exists s_warehouse_${ROUND};
 create table s_warehouse_${ROUND}
 (
     wrhs_warehouse_id           char(16)              not null,
     wrhs_warehouse_desc         char(200)                     ,
-    wrhs_warehouse_sq_ft        integer                       
+    wrhs_warehouse_sq_ft        integer
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_warehouse';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_warehouse_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_web_page                                         
+--   Table: s_web_page
 -- ============================================================
 drop table if exists s_web_page_${ROUND};
 create table s_web_page_${ROUND}
@@ -321,13 +321,13 @@ create table s_web_page_${ROUND}
     wpag_char_cnt               integer                       ,
     wpag_link_cnt               integer                       ,
     wpag_image_cnt              integer                       ,
-    wpag_max_ad_cnt             integer                       
+    wpag_max_ad_cnt             integer
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_web_page';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_web_page_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_promotion                                        
+--   Table: s_promotion
 -- ============================================================
 drop table if exists s_promotion_${ROUND};
 create table s_promotion_${ROUND}
@@ -349,13 +349,13 @@ create table s_promotion_${ROUND}
     prom_channel_details        char(100)                     ,
     prom_purpose                char(15)                      ,
     prom_discount_active        char(1)                       ,
-    prom_discount_pct           decimal(5,2)                  
+    prom_discount_pct           decimal(5,2)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_promotion';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_promotion_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_store_returns                                    
+--   Table: s_store_returns
 -- ============================================================
 drop table if exists s_store_returns_${ROUND};
 create table s_store_returns_${ROUND}
@@ -376,13 +376,13 @@ create table s_store_returns_${ROUND}
     sret_refunded_cash          decimal(7,2)                  ,
     sret_reversed_charge        decimal(7,2)                  ,
     sret_store_credit           decimal(7,2)                  ,
-    sret_reason_id              char(16)                      
+    sret_reason_id              char(16)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_store_returns';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_store_returns_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_catalog_returns                                  
+--   Table: s_catalog_returns
 -- ============================================================
 drop table if exists s_catalog_returns_${ROUND};
 create table s_catalog_returns_${ROUND}
@@ -406,13 +406,13 @@ create table s_catalog_returns_${ROUND}
     cret_reason_id              char(16)                      ,
     cret_shipmode_id            char(16)                      ,
     cret_catalog_page_id        char(16)                      ,
-    cret_warehouse_id           char(16)                      
+    cret_warehouse_id           char(16)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_catalog_returns';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_catalog_returns_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_web_returns                                      
+--   Table: s_web_returns
 -- ============================================================
 drop table if exists s_web_returns_${ROUND};
 create table s_web_returns_${ROUND}
@@ -433,13 +433,13 @@ create table s_web_returns_${ROUND}
     wret_refunded_cash          decimal(7,2)                  ,
     wret_reversed_charge        decimal(7,2)                  ,
     wret_account_credit         decimal(7,2)                  ,
-    wret_reason_id              char(16)                      
+    wret_reason_id              char(16)
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_web_returns';
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_web_returns_${ROUND}.dat';
 
 -- ============================================================
---   Table: s_inventory                                        
+--   Table: s_inventory
 -- ============================================================
 drop table if exists s_inventory_${ROUND};
 create table s_inventory_${ROUND}
@@ -447,9 +447,7 @@ create table s_inventory_${ROUND}
     invn_warehouse_id           char(16)              not null,
     invn_item_id                char(16)              not null,
     invn_date                   char(10)              not null,
-    invn_qty_on_hand            integer                       
+    invn_qty_on_hand            integer
 )
-using csv OPTIONS(mode "simple")
-location '${LOCATION}/s_inventory';
-
-
+    using csv OPTIONS(mode "simple")
+location '${LOCATION}/s_inventory_${ROUND}.dat';
