@@ -1,0 +1,23 @@
+use ${DB};
+
+select count(*) s_catalog_order_count from s_catalog_order_${ROUND};
+select count(*) s_catalog_order_lineitem_count from s_catalog_order_lineitem_${ROUND};
+select count(*) s_catalog_returns_count from s_catalog_returns_${ROUND};
+select count(*) s_inventory_count from s_inventory_${ROUND};
+select count(*) s_purchase_count from s_purchase_${ROUND};
+select count(*) s_purchase_lineitem_count from s_purchase_lineitem_${ROUND};
+select count(*) s_store_returns_count from s_store_returns_${ROUND};
+select count(*) s_web_order_count from s_web_order_${ROUND};
+select count(*) s_web_order_lineitem_count from s_web_order_lineitem_${ROUND};
+select count(*) s_web_returns_count from s_web_returns_${ROUND};
+select count(*) s_catalog_page_count from s_catalog_page_${ROUND};
+select count(*) s_zip_to_gmt_count from s_zip_to_gmt_${ROUND};
+select count(*) s_customer_count from s_customer_${ROUND};
+select count(*) s_customer_address_count from s_customer_address_${ROUND};
+select count(*) s_item_count from s_item_${ROUND};
+select count(*) s_store_count from s_store_${ROUND};
+select count(*) s_call_center_count from s_call_center_${ROUND};
+select count(*) s_web_site_count from s_web_site_${ROUND};
+select count(*) s_warehouse_count from s_warehouse_${ROUND};
+select count(*) s_web_page_count from s_web_page_${ROUND};
+select count(*) s_promotion_count from s_promotion_${ROUND};
