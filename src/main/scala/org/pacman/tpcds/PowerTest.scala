@@ -8,11 +8,7 @@ object PowerTest {
     val queriesDir = it.next()
     val DB = it.next()
 
-    val spark = SparkSession
-      .builder()
-      .appName(getClass.getName)
-      .enableHiveSupport()
-      .getOrCreate()
+    val spark = Utility.createSparkSession(getClass.getName)
 
     spark.sql(s"use ${DB}")
     val path = s"${queriesDir}/query_0.sql"

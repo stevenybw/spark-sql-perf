@@ -1,6 +1,6 @@
 package org.pacman.tpcds
 
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.catalyst.csv.{CSVOptions, UnivocityGenerator}
 import org.apache.spark.sql.catalyst.expressions.GenericInternalRow
 import org.apache.spark.sql.internal.SQLConf
@@ -29,5 +29,12 @@ object Utility {
     gen.flush()
     writer.flush()
     writer.close()
+  }
+
+  def createSparkSession(appName: String): SparkSession = {
+    SparkSession
+      .builder()
+      .appName(appName)
+      .getOrCreate()
   }
 }

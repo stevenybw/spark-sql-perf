@@ -13,11 +13,7 @@ object LoadData {
     val DB = it.next()
     val dstLocation = it.next()
 
-    val spark = SparkSession
-      .builder()
-      .appName(getClass.getName)
-      .enableHiveSupport()
-      .getOrCreate()
+    val spark = Utility.createSparkSession(getClass.getName)
 
     spark.sql(s"drop database if exists $DB cascade")
     spark.sql(s"create database $DB")

@@ -10,11 +10,7 @@ object ThroughputTest {
     val sessionIdFrom = it.next().toInt
     val sessionIdTo = it.next().toInt
 
-    val spark = SparkSession
-      .builder()
-      .appName(getClass.getName)
-      .enableHiveSupport()
-      .getOrCreate()
+    val spark = Utility.createSparkSession(getClass.getName)
 
     val threadPool = java.util.concurrent.Executors.newFixedThreadPool(sessionIdTo - sessionIdFrom + 1)
 

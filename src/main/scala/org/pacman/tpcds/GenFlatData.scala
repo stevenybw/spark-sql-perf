@@ -15,10 +15,7 @@ object GenFlatData {
     val scaleFactor = it.next()
     val numPartitions = it.next().toInt
 
-    val spark = SparkSession
-      .builder()
-      .appName(getClass.getName)
-      .getOrCreate()
+    val spark = Utility.createSparkSession(getClass.getName)
 
     val configuration = spark.sparkContext.hadoopConfiguration
     val s_configuration = new SerializableConfiguration(configuration)
