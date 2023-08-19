@@ -18,7 +18,6 @@ object TransformFlatData {
     val spark = Utility.createSparkSession(getClass.getName)
 
     val configuration = spark.sparkContext.hadoopConfiguration
-    val s_configuration = new SerializableConfiguration(configuration)
 
     val tables = new TPCDSTables(spark.sqlContext,
       dsdgenDir = dsdgenDir,
@@ -27,9 +26,12 @@ object TransformFlatData {
     val path = new Path(srcLocation)
     val fs = path.getFileSystem(configuration)
     fs.mkdirs(path)
-    val dataGenerator = tables.dataGenerator
 
-    tables.tables.foreach(table => {
+    spark.sql(s"drop database if exists $DB cascade")
+    spark.sql(s"create database $DB")
+    spark.sql(s"use $DB")
+
+    tables.tables.take(2).foreach(table => {
       println(s"Creating table ${table.name}")
       val tableLocation = s"${srcLocation}/${table.name}"
       val data = spark.read.schema(table.schema).options(Map("sep" -> "|", "header" -> "false")).csv(tableLocation)
@@ -43,7 +45,7 @@ object TransformFlatData {
       } else {
         data.write
       }
-      writer.format("parquet").mode(SaveMode.Overwrite).save(s"${dstLocation}/${table.name}")
+      writer.format("delta").mode(SaveMode.Overwrite).saveAsTable(s"${table.name}")
     })
   }
 }

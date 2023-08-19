@@ -28,15 +28,15 @@ object LoadData {
       val tableLocation = s"${dstLocation}/${table.name}"
       println(s"[CREATE TABLE] ${table.name}")
       spark.catalog.createTable(table.name, tableLocation, "parquet")
-      println(s"[RECOVER PARTITIONS] ${table.name}")
-      if (table.partitionColumns.nonEmpty) {
-        spark.sqlContext.sql(s"ALTER TABLE ${table.name} RECOVER PARTITIONS")
-      }
-      println(s"[COMPUTE STATISTICS] ${table.name}")
-      spark.sqlContext.sql(s"ANALYZE TABLE ${table.name} COMPUTE STATISTICS")
-      val allColumns = table.fields.map(_.name).mkString(", ")
-      println(s"[COMPUTE STATISTICS FOR COLUMNS] ${table.name}")
-      spark.sqlContext.sql(s"ANALYZE TABLE ${table.name} COMPUTE STATISTICS FOR COLUMNS $allColumns")
+      //      println(s"[RECOVER PARTITIONS] ${table.name}")
+      //      if (table.partitionColumns.nonEmpty) {
+      //        spark.sqlContext.sql(s"ALTER TABLE ${table.name} RECOVER PARTITIONS")
+      //      }
+      //      println(s"[COMPUTE STATISTICS] ${table.name}")
+      //      spark.sqlContext.sql(s"ANALYZE TABLE ${table.name} COMPUTE STATISTICS")
+      //      val allColumns = table.fields.map(_.name).mkString(", ")
+      //      println(s"[COMPUTE STATISTICS FOR COLUMNS] ${table.name}")
+      //      spark.sqlContext.sql(s"ANALYZE TABLE ${table.name} COMPUTE STATISTICS FOR COLUMNS $allColumns")
     })
   }
 }

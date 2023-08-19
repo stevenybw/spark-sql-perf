@@ -35,6 +35,7 @@ object Utility {
     SparkSession
       .builder()
       .appName(appName)
+      .enableHiveSupport()
       .getOrCreate()
   }
 }
