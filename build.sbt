@@ -40,6 +40,8 @@ libraryDependencies += "com.twitter" %% "util-jvm" % "6.45.0" % "provided"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 
+libraryDependencies += "io.delta" %% "delta-core" % "2.3.0"
+
 libraryDependencies += "org.yaml" % "snakeyaml" % "1.23"
 
 fork := true
