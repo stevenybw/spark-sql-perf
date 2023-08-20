@@ -86,16 +86,11 @@ object MtRefresh {
     require(date.size == 3)
     require(inventory_date.size == 3)
 
-    val threadPool = java.util.concurrent.Executors.newFixedThreadPool(16)
+    val threadPool = java.util.concurrent.Executors.newFixedThreadPool(4)
 
     val spark = Utility.createSparkSession(getClass.getName)
     spark.sql(s"use ${db}")
-    val futures_A = sqlFiles.map(sqlFile => threadPool.submit(new Runnable {
-      override def run(): Unit = {
-        executeSql(spark, db, s"${mtSqlsDir}/${sqlFile}", round)
-      }
-    })).toArray
-    val futures_B = date.map(d => threadPool.submit(new Runnable {
+    val futures_1 = date.map(d => threadPool.submit(new Runnable {
       override def run(): Unit = {
         val (from, to) = parseDate(d)
         executeDF_WS(spark, from, to)
@@ -103,17 +98,21 @@ object MtRefresh {
         executeDF_CS(spark, from, to)
       }
     })).toArray
-    val futures_C = inventory_date.map(d => threadPool.submit(new Runnable {
+    val futures_2 = inventory_date.map(d => threadPool.submit(new Runnable {
       override def run(): Unit = {
         val (from, to) = parseDate(d)
         executeDF_I(spark, from, to)
-        executeDF_I(spark, from, to)
-        executeDF_I(spark, from, to)
       }
     })).toArray
-    futures_A.foreach(_.get())
-    futures_B.foreach(_.get())
-    futures_C.foreach(_.get())
+    futures_1.foreach(_.get())
+    futures_2.foreach(_.get())
+
+    val futures_3 = sqlFiles.map(sqlFile => threadPool.submit(new Runnable {
+      override def run(): Unit = {
+        executeSql(spark, db, s"${mtSqlsDir}/${sqlFile}", round)
+      }
+    })).toArray
+    futures_3.foreach(_.get())
 
     threadPool.shutdown()
   }
