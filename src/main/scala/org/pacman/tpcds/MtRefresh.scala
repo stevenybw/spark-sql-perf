@@ -90,22 +90,42 @@ object MtRefresh {
 
     val spark = Utility.createSparkSession(getClass.getName)
     spark.sql(s"use ${db}")
-    val futures_1 = date.map(d => threadPool.submit(new Runnable {
+    val f_WS = threadPool.submit(new Runnable {
       override def run(): Unit = {
-        val (from, to) = parseDate(d)
-        executeDF_WS(spark, from, to)
-        executeDF_CS(spark, from, to)
-        executeDF_CS(spark, from, to)
+        date.foreach(d => {
+          val (from, to) = parseDate(d)
+          executeDF_WS(spark, from, to)
+        })
       }
-    })).toArray
-    val futures_2 = inventory_date.map(d => threadPool.submit(new Runnable {
+    })
+    val f_CS = threadPool.submit(new Runnable {
       override def run(): Unit = {
-        val (from, to) = parseDate(d)
-        executeDF_I(spark, from, to)
+        date.foreach(d => {
+          val (from, to) = parseDate(d)
+          executeDF_CS(spark, from, to)
+        })
       }
-    })).toArray
-    futures_1.foreach(_.get())
-    futures_2.foreach(_.get())
+    })
+    val f_SS = threadPool.submit(new Runnable {
+      override def run(): Unit = {
+        date.foreach(d => {
+          val (from, to) = parseDate(d)
+          executeDF_SS(spark, from, to)
+        })
+      }
+    })
+    val f_I = threadPool.submit(new Runnable {
+      override def run(): Unit = {
+        inventory_date.foreach(d => {
+          val (from, to) = parseDate(d)
+          executeDF_I(spark, from, to)
+        })
+      }
+    })
+    f_WS.get()
+    f_CS.get()
+    f_SS.get()
+    f_I.get()
 
     val futures_3 = sqlFiles.map(sqlFile => threadPool.submit(new Runnable {
       override def run(): Unit = {
