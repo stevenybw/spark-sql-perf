@@ -31,7 +31,7 @@ object TransformFlatData {
     spark.sql(s"create database $DB")
     spark.sql(s"use $DB")
 
-    tables.tables.take(2).foreach(table => {
+    tables.tables.foreach(table => {
       println(s"Creating table ${table.name}")
       val tableLocation = s"${srcLocation}/${table.name}"
       val data = spark.read.schema(table.schema).options(Map("sep" -> "|", "header" -> "false")).csv(tableLocation)

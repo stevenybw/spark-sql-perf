@@ -1,21 +1,20 @@
 package org.pacman.tpcds
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, Encoders, Row, SparkSession}
 import org.apache.spark.sql.catalyst.csv.{CSVOptions, UnivocityGenerator}
 import org.apache.spark.sql.catalyst.expressions.GenericInternalRow
 import org.apache.spark.sql.internal.SQLConf
 
 import java.io.PrintWriter
+import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 
 object Utility {
   def writeCsvFile(df: DataFrame, resultFile: String): Unit = {
     val writer = new PrintWriter(resultFile)
+    val ser = df.encoder.asInstanceOf[ExpressionEncoder[Row]].createSerializer()
     val resultRows = df
       .collect()
-      .map(row =>
-        new GenericInternalRow(
-          (0 until row.length).map(i => row.get(i)).toArray
-        )
+      .map(row => ser(row)
       )
     val sqlConf = new SQLConf()
     val csvOptions = new CSVOptions(
