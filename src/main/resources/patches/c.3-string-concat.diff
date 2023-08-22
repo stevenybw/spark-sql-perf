@@ -1,0 +1,93 @@
+diff --git a/query5.tpl b/query5.tpl
+index ce7552e..32812e4 100644
+--- a/query5.tpl
++++ b/query5.tpl
+@@ -137,21 +137,21 @@
+         , sum(profit) as profit
+  from 
+  (select 'store channel' as channel
+-        , 'store' || s_store_id as id
++        , concat('store', s_store_id) as id
+         , sales
+         , returns
+         , (profit - profit_loss) as profit
+  from   ssr
+  union all
+  select 'catalog channel' as channel
+-        , 'catalog_page' || cp_catalog_page_id as id
++        , concat('catalog_page', cp_catalog_page_id) as id
+         , sales
+         , returns
+         , (profit - profit_loss) as profit
+  from  csr
+  union all
+  select 'web channel' as channel
+-        , 'web_site' || web_site_id as id
++        , concat('web_site', web_site_id) as id
+         , sales
+         , returns
+         , (profit - profit_loss) as profit
+diff --git a/query66.tpl b/query66.tpl
+index d119034..915800f 100644
+--- a/query66.tpl
++++ b/query66.tpl
+@@ -94,7 +94,7 @@
+  	,w_county
+  	,w_state
+  	,w_country
+- 	,'[SMC.1]' || ',' || '[SMC.2]' as ship_carriers
++ 	,concat('[SMC.1]', ',', '[SMC.2]') as ship_carriers
+        ,d_year as year
+  	,sum(case when d_moy = 1 
+  		then [SALESONE]* ws_quantity else 0 end) as jan_sales
+@@ -174,7 +174,7 @@
+  	,w_county
+  	,w_state
+  	,w_country
+- 	,'[SMC.1]' || ',' || '[SMC.2]' as ship_carriers
++ 	,concat('[SMC.1]', ',', '[SMC.2]') as ship_carriers
+        ,d_year as year
+  	,sum(case when d_moy = 1 
+  		then [SALESTWO]* cs_quantity else 0 end) as jan_sales
+diff --git a/query80.tpl b/query80.tpl
+index d51a4da..919d682 100644
+--- a/query80.tpl
++++ b/query80.tpl
+@@ -105,21 +105,21 @@ group by web_site_id)
+         , sum(profit) as profit
+  from 
+  (select 'store channel' as channel
+-        , 'store' || store_id as id
++        , concat('store', store_id) as id
+         , sales
+         , returns
+         , profit
+  from   ssr
+  union all
+  select 'catalog channel' as channel
+-        , 'catalog_page' || catalog_page_id as id
++        , concat('catalog_page', catalog_page_id) as id
+         , sales
+         , returns
+         , profit
+  from  csr
+  union all
+  select 'web channel' as channel
+-        , 'web_site' || web_site_id as id
++        , concat('web_site', web_site_id) as id
+         , sales
+         , returns
+         , profit
+diff --git a/query84.tpl b/query84.tpl
+index c601288..2c5d036 100644
+--- a/query84.tpl
++++ b/query84.tpl
+@@ -37,7 +37,7 @@
+  define _LIMIT=100;
+  
+  [_LIMITA] select [_LIMITB] c_customer_id as customer_id
+-       , coalesce(c_last_name,'') || ', ' || coalesce(c_first_name,'') as customername
++       , concat(coalesce(c_last_name,''), ', ', coalesce(c_first_name,'')) as customername
+  from customer
+      ,customer_address
+      ,customer_demographics
