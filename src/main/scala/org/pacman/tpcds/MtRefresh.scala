@@ -2,6 +2,7 @@ package org.pacman.tpcds
 
 import io.delta.tables.DeltaTable
 import org.apache.spark.sql.SparkSession
+import org.pacman.tpcds.Utility.executePhase
 
 import java.io.FileInputStream
 
@@ -86,54 +87,57 @@ object MtRefresh {
     require(date.size == 3)
     require(inventory_date.size == 3)
 
-    val threadPool = java.util.concurrent.Executors.newFixedThreadPool(4)
+    executePhase(db, "MtRefresh") {
 
-    val spark = Utility.createSparkSession(getClass.getName)
-    spark.sql(s"use ${db}")
-    val f_WS = threadPool.submit(new Runnable {
-      override def run(): Unit = {
-        date.foreach(d => {
-          val (from, to) = parseDate(d)
-          executeDF_WS(spark, from, to)
-        })
-      }
-    })
-    val f_CS = threadPool.submit(new Runnable {
-      override def run(): Unit = {
-        date.foreach(d => {
-          val (from, to) = parseDate(d)
-          executeDF_CS(spark, from, to)
-        })
-      }
-    })
-    val f_SS = threadPool.submit(new Runnable {
-      override def run(): Unit = {
-        date.foreach(d => {
-          val (from, to) = parseDate(d)
-          executeDF_SS(spark, from, to)
-        })
-      }
-    })
-    val f_I = threadPool.submit(new Runnable {
-      override def run(): Unit = {
-        inventory_date.foreach(d => {
-          val (from, to) = parseDate(d)
-          executeDF_I(spark, from, to)
-        })
-      }
-    })
-    f_WS.get()
-    f_CS.get()
-    f_SS.get()
-    f_I.get()
+      val threadPool = java.util.concurrent.Executors.newFixedThreadPool(4)
 
-    val futures_3 = sqlFiles.map(sqlFile => threadPool.submit(new Runnable {
-      override def run(): Unit = {
-        executeSql(spark, db, s"${mtSqlsDir}/${sqlFile}", round)
-      }
-    })).toArray
-    futures_3.foreach(_.get())
+      val spark = Utility.createSparkSession(getClass.getName)
+      spark.sql(s"use ${db}")
+      val f_WS = threadPool.submit(new Runnable {
+        override def run(): Unit = {
+          date.foreach(d => {
+            val (from, to) = parseDate(d)
+            executeDF_WS(spark, from, to)
+          })
+        }
+      })
+      val f_CS = threadPool.submit(new Runnable {
+        override def run(): Unit = {
+          date.foreach(d => {
+            val (from, to) = parseDate(d)
+            executeDF_CS(spark, from, to)
+          })
+        }
+      })
+      val f_SS = threadPool.submit(new Runnable {
+        override def run(): Unit = {
+          date.foreach(d => {
+            val (from, to) = parseDate(d)
+            executeDF_SS(spark, from, to)
+          })
+        }
+      })
+      val f_I = threadPool.submit(new Runnable {
+        override def run(): Unit = {
+          inventory_date.foreach(d => {
+            val (from, to) = parseDate(d)
+            executeDF_I(spark, from, to)
+          })
+        }
+      })
+      f_WS.get()
+      f_CS.get()
+      f_SS.get()
+      f_I.get()
 
-    threadPool.shutdown()
+      val futures_3 = sqlFiles.map(sqlFile => threadPool.submit(new Runnable {
+        override def run(): Unit = {
+          executeSql(spark, db, s"${mtSqlsDir}/${sqlFile}", round)
+        }
+      })).toArray
+      futures_3.foreach(_.get())
+
+      threadPool.shutdown()
+    }
   }
 }

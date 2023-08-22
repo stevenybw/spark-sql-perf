@@ -4,6 +4,7 @@ import com.databricks.spark.sql.perf.tpcds.TPCDSTables
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.util.SerializableConfiguration
+import org.pacman.tpcds.Utility.executePhase
 
 object TransformFlatData {
   def main(args: Array[String]): Unit = {
@@ -15,37 +16,40 @@ object TransformFlatData {
     val DB = it.next()
     val dstLocation = it.next()
 
-    val spark = Utility.createSparkSession(getClass.getName)
+    executePhase(scaleFactor, "TransformFlatData") {
 
-    val configuration = spark.sparkContext.hadoopConfiguration
+      val spark = Utility.createSparkSession(getClass.getName)
 
-    val tables = new TPCDSTables(spark.sqlContext,
-      dsdgenDir = dsdgenDir,
-      scaleFactor = scaleFactor)
+      val configuration = spark.sparkContext.hadoopConfiguration
 
-    val path = new Path(srcLocation)
-    val fs = path.getFileSystem(configuration)
-    fs.mkdirs(path)
+      val tables = new TPCDSTables(spark.sqlContext,
+        dsdgenDir = dsdgenDir,
+        scaleFactor = scaleFactor)
 
-    spark.sql(s"drop database if exists $DB cascade")
-    spark.sql(s"create database $DB")
-    spark.sql(s"use $DB")
+      val path = new Path(srcLocation)
+      val fs = path.getFileSystem(configuration)
+      fs.mkdirs(path)
 
-    tables.tables.foreach(table => {
-      println(s"Creating table ${table.name}")
-      val tableLocation = s"${srcLocation}/${table.name}"
-      val data = spark.read.schema(table.schema).options(Map("sep" -> "|", "header" -> "false")).csv(tableLocation)
-      val tempTableName = s"${table.name}_text"
-      data.createOrReplaceTempView(tempTableName)
-      val writer = if (table.partitionColumns.nonEmpty) {
-        val columnString = data.schema.fields.map(_.name).mkString(",")
-        val partitionColumnString = table.partitionColumns.mkString(",")
-        val grouped = spark.sql(s"SELECT ${columnString} FROM ${tempTableName} DISTRIBUTE BY ${partitionColumnString}")
-        grouped.write.partitionBy(table.partitionColumns: _*)
-      } else {
-        data.write
-      }
-      writer.format("delta").mode(SaveMode.Overwrite).saveAsTable(s"${table.name}")
-    })
+      spark.sql(s"drop database if exists $DB cascade")
+      spark.sql(s"create database $DB")
+      spark.sql(s"use $DB")
+
+      tables.tables.foreach(table => {
+        println(s"Creating table ${table.name}")
+        val tableLocation = s"${srcLocation}/${table.name}"
+        val data = spark.read.schema(table.schema).options(Map("sep" -> "|", "header" -> "false")).csv(tableLocation)
+        val tempTableName = s"${table.name}_text"
+        data.createOrReplaceTempView(tempTableName)
+        val writer = if (table.partitionColumns.nonEmpty) {
+          val columnString = data.schema.fields.map(_.name).mkString(",")
+          val partitionColumnString = table.partitionColumns.mkString(",")
+          val grouped = spark.sql(s"SELECT ${columnString} FROM ${tempTableName} DISTRIBUTE BY ${partitionColumnString}")
+          grouped.write.partitionBy(table.partitionColumns: _*)
+        } else {
+          data.write
+        }
+        writer.format("delta").mode(SaveMode.Overwrite).saveAsTable(s"${table.name}")
+      })
+    }
   }
 }
