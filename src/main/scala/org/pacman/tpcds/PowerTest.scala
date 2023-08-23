@@ -11,11 +11,7 @@ object PowerTest {
     val spark = Utility.createSparkSession(getClass.getName)
 
     spark.sql(s"use ${DB}")
-    val path = s"${queriesDir}/query_0.sql"
-    // read path, split by ";"
-    val queries = scala.io.Source.fromFile(path).mkString.split(";")
-    // for each line, sqlContext.sql(line)
-    queries.zipWithIndex.foreach { case (query, i) =>
+    Utility.loadQueries(queriesDir, 0).zipWithIndex.foreach { case (query, i) =>
       println(s"Testing: \n${query}")
       val df = spark.sql(query)
       Utility.writeCsvFile(df, s"${i}.csv")

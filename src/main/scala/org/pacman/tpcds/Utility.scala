@@ -37,4 +37,12 @@ object Utility {
       .enableHiveSupport()
       .getOrCreate()
   }
+
+  def loadQueries(queriesDir: String, stream: Int): Array[String] = {
+    val path = s"${queriesDir}/query_${stream}.sql"
+    // read path, split by ";"
+    val queries = scala.io.Source.fromFile(path).mkString.split(";")
+    // for each line, sqlContext.sql(line)
+    queries.slice(0, queries.length - 1)
+  }
 }

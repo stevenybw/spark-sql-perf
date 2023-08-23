@@ -308,7 +308,7 @@ class TPCDSTables(
       'c_birth_country           .string,
       'c_login                   .string,
       'c_email_address           .string,
-      'c_last_review_date        .string),
+      'c_last_review_date_sk     .int),
     Table("customer_address",
       partitionColumns = Nil,
       'ca_address_sk             .int,
