@@ -35,13 +35,12 @@ object GenFlatData {
         println(s"Generating table ${table.name}")
         val tableLocation = s"${location}/${table.name}"
         dataGenerator.generate(spark.sparkContext, table.name, numPartitions, scaleFactor).mapPartitionsWithIndex { case (pid, lines) =>
-          val linesArray = lines.toArray
-          if (linesArray.nonEmpty) {
+          if (lines.hasNext) {
             val path = new Path(s"${tableLocation}/part${pid}.txt")
             val fs = path.getFileSystem(s_configuration.value)
             val out = fs.create(path, true, 4096)
             val writer = new PrintWriter(out)
-            linesArray.foreach(line => {
+            lines.foreach(line => {
               writer.println(line)
             })
             writer.flush()
