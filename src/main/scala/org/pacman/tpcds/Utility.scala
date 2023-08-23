@@ -45,4 +45,17 @@ object Utility {
     // for each line, sqlContext.sql(line)
     queries.slice(0, queries.length - 1)
   }
+
+  def executePhase(sf: String, phaseName: String)(v: => Unit): Unit = {
+    val name = s"${phaseName}-${sf}"
+    val bt = System.currentTimeMillis()
+    print(s"[${bt}] Begin the execution of ${name}")
+    v
+    val et = System.currentTimeMillis()
+    print(s"[${et}] End the execution of ${name}")
+    val fw = new java.io.FileWriter("phase_log.csv", true)
+    fw.write(s"${sf},${phaseName},${bt},${et},${1e-6 * (et - bt)}\n")
+    fw.flush()
+    fw.close()
+  }
 }
